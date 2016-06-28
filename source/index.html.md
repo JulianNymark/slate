@@ -1,189 +1,198 @@
 ---
-title: API Reference
-
-language_tabs:
-  - shell
-  - ruby
-  - python
-  - javascript
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
+title: SynQ Video API 1.0.5
 
 search: true
 ---
 
-# Introduction
+# SynQ Video API 1.0.5
+> ### Produces
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+## Find videos matching some metadata criteria.
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+	
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+"object"
+```
+```http
+HTTP/1.1 400 Bad Request
 ```
 
-```python
-import kittn
+You may optionally request only some of the metadata fields.
 
-api = kittn.authorize('meowmeowmeow')
+
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+metadata<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+keys | formData | string | Optional. 
+
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | object | An array of video metadata objects, containing some or all of the videos fields.
+400 | no content | invalid input
+
+
+## Create a new video with optional metadata.
+
+	
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+"object"
+```
+```http
+HTTP/1.1 400 Bad Request
 ```
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+You may optionally add some metadata about the video. Any metadata field whose key starts with an underscore (_) may be assigned an arbitrary string value. The other fields have special meaning and constrains. See the metadata_object for more information.
+
+
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+metadata | formData | string | Optional. 
+
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | object | A video object, containing all metadata members.
+400 | no content | An error occurred
+
+
+## Return details about a video.
+
+	
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+"object"
+```
+```http
+HTTP/1.1 400 Bad Request
 ```
 
-```javascript
-const kittn = require('kittn');
+You may optionally request only some of the metadata fields.
 
-let api = kittn.authorize('meowmeowmeow');
+
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+video<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+keys | formData | string | Optional. 
+
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | object | A video metadata object, containing some or all of the video’s fields.
+400 | no content | invalid input
+
+
+## Update a video&#039;s metadata.
+
+	
+```http
+HTTP/1.1 200 OK
+```
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+"string"
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+Any metadata field whose key starts with an underscore (_) may be assigned an arbitrary string value. The other fields have special meaning and constrains. See the metadata_object for more information.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+video<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+metadata | formData | string | Optional. 
 
-`Authorization: meowmeowmeow`
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | no content | A video object, containing all metadata members.
+400 | string | An error occurred
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
 
-# Kittens
+## Return parameters needed for uploading a video file.
 
-## Get All Kittens
+	
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+    "AWSAccessKeyId": "string",
+    "Content-Type": "string",
+    "Policy": "string",
+    "Signature": "string",
+    "acl": "string",
+    "key": "string"
 }
 ```
+```http
+HTTP/1.1 400 Bad Request
+```
 
-This endpoint retrieves a specific kitten.
+Return parameters needed for uploading a video file to Amazon Simple Storage Service. See http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-post-example.html
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
 
-### HTTP Request
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+video<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
 
-`GET http://example.com/kittens/<ID>`
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | object | A video object, containing all metadata members.
+400 | no content | An error occurred
 
-### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+## Return parameters needed for transmitting a video stream to our rtmp receiver.
 
+	
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "rtmp_host": "string",
+    "rtmp_port": "string",
+    "rtmp_key": "string",
+    "rtmp_url": "string"
+}
+```
+```http
+HTTP/1.1 400 Bad Request
+```
+
+### Parameters
+Name | In | Type | Description
+--- | --- | --- | ---
+api_key<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+video<b title="required">&nbsp;*&nbsp;</b> | formData | string | 
+
+### Responses
+Http code | Type | Description
+--- | --- | ---
+200 | object | Returns an object containing the information required to stream to our RTMP receiver.
+400 | no content | An error occurred
+
+
+
+# Models
